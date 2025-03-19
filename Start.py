@@ -24,6 +24,21 @@ data_manager.load_user_data(
 import streamlit as st
 import pandas as pd
 
+# Begrüßungsnachricht mit Benutzername
+if 'username' in st.session_state:
+    username = st.session_state['username']
+    st.write(f"Herzlich Willkommen, {username}, zum Dosierungsrechner!")
+else:
+    st.write("Herzlich Willkommen zum Dosierungsrechner!")
+
+# Informationen zum Rechner
+st.write("""Dieser Rechner hilft Ihnen, die richtige Medikamentendosis basierend auf dem Körpergewicht und dem Geschlecht des Patienten zu berechnen.
+Bitte geben Sie die erforderlichen Informationen in die Eingabefelder ein und klicken Sie auf 'Berechnen', um die empfohlene Dosis zu erhalten.
+""")
+
+# Warnung zur richtigen Nutzung
+st.warning("Bitte beachten Sie, dass dieser Rechner eine ärztliche Beratung nicht ersetzt.")
+
 st.title("Dosierungsrechner")
 
 """

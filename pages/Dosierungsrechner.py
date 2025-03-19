@@ -1,11 +1,12 @@
 import streamlit as st
+import pandas as pd
+from datetime import datetime
 
 # Streamlit App Titel
-st.title("Medikamenten-Dosierungsrechner mit Geschlecht")
+st.title("Medikamenten-Dosierungsrechner 💊")
 
 # Sidebar für Eingaben
 st.header("Eingabeparameter")
-
 # Formular für die Berechnung
 with st.form(key='dosierungs_form'):
     # Eingabe: Körpergewicht des Patienten
@@ -30,3 +31,15 @@ if submit_button:
         dosis = gewicht * dosierung_pro_kg
 
     st.write(f"Die berechnete Medikamentendosis für eine {geschlecht.lower()} Person mit {gewicht} kg Körpergewicht beträgt {dosis} mg.")
+
+    # Daten speichern
+    new_data = pd.DataFrame({
+        'timestamp': [datetime.now()],
+        'gewicht': [gewicht],
+        'dosierung': [dosis]
+    })
+
+    if 'data_df' not in st.session_state:
+        st.session_state['data_df'] = pd.DataFrame(columns=['timestamp', 'gewicht', 'dosierung'])
+
+    st.session_state['data_df'] = pd.concat([st.session_state['data_df'], new_data], ignore_index=True)
