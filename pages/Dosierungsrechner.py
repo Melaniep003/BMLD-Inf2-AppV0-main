@@ -2,6 +2,17 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
+# Funktion zum Laden der Daten
+def load_data():
+    try:
+        return pd.read_csv('data.csv', parse_dates=['timestamp'])
+    except FileNotFoundError:
+        return pd.DataFrame(columns=['timestamp', 'gewicht', 'dosierung'])
+
+# Funktion zum Speichern der Daten
+def save_data(data_df):
+    data_df.to_csv('data.csv', index=False)
+
 # Streamlit App Titel
 st.title("Medikamenten-Dosierungsrechner 💊")
 
@@ -40,6 +51,7 @@ if submit_button:
     })
 
     if 'data_df' not in st.session_state:
-        st.session_state['data_df'] = pd.DataFrame(columns=['timestamp', 'gewicht', 'dosierung'])
+        st.session_state['data_df'] = load_data()
 
     st.session_state['data_df'] = pd.concat([st.session_state['data_df'], new_data], ignore_index=True)
+    save_data(st.session_state['data_df'])
