@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from utils.data_manager import DataManager
 
 # Funktion zum Laden der Daten
 def load_data():
@@ -44,14 +45,21 @@ if submit_button:
     st.write(f"Die berechnete Medikamentendosis für eine {geschlecht.lower()} Person mit {gewicht} kg Körpergewicht beträgt {dosis} mg.")
 
     # Daten speichern
-    new_data = pd.DataFrame({
-        'timestamp': [datetime.now()],
-        'gewicht': [gewicht],
-        'dosierung': [dosis]
-    })
+    new_data = {
+        'timestamp': datetime.now(),
+        'gewicht': gewicht,
+        'dosierung': dosis
+    }
 
     if 'data_df' not in st.session_state:
         st.session_state['data_df'] = load_data()
 
-    st.session_state['data_df'] = pd.concat([st.session_state['data_df'], new_data], ignore_index=True)
+    # Append new data to session state
+    st.session_state['data_df'] = pd.concat([st.session_state['data_df'], pd.DataFrame([new_data])], ignore_index=True)
+    
+    # Save data using DataManager
+    data_manager = DataManager()
+    data_manager.append_record(session_state_key='data_df', record_dict=new_data)
+
+    # Optional: Save data to CSV
     save_data(st.session_state['data_df'])
